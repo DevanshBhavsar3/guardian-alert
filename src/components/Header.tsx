@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, Radio, Siren } from 'lucide-react';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { LogOut, Radio, Siren } from "lucide-react";
 
 interface HeaderProps {
   onSimulate: () => void;
@@ -20,11 +20,15 @@ export const Header: React.FC<HeaderProps> = ({ onSimulate }) => {
                 <Radio className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gradient">AcciTrack</h1>
-                <p className="text-xs text-muted-foreground">Emergency Response System</p>
+                <h1 className="text-xl font-bold text-gradient">
+                  Guardian Alert
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  Emergency Response System
+                </p>
               </div>
             </div>
-            
+
             {station && (
               <div className="hidden sm:flex items-center gap-2 ml-4 pl-4 border-l border-border">
                 <div className="w-2 h-2 bg-status-resolved rounded-full animate-pulse" />
@@ -35,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ onSimulate }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button 
+            <Button
               onClick={onSimulate}
               variant="critical"
               className="hidden sm:flex"
@@ -43,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({ onSimulate }) => {
               <Siren className="h-4 w-4 mr-1" />
               Simulate Accident
             </Button>
-            <Button 
+            <Button
               onClick={onSimulate}
               variant="critical"
               size="icon"
@@ -51,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ onSimulate }) => {
             >
               <Siren className="h-4 w-4" />
             </Button>
-            
+
             <Button variant="outline" size="icon" onClick={signOut}>
               <LogOut className="h-4 w-4" />
             </Button>

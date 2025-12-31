@@ -1,43 +1,56 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Radio, AlertCircle, Loader2 } from 'lucide-react';
-import { z } from 'zod';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Radio, AlertCircle, Loader2 } from "lucide-react";
+import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 const signUpSchema = loginSchema.extend({
-  stationName: z.string().min(2, 'Station name must be at least 2 characters').max(50, 'Station name too long'),
+  stationName: z
+    .string()
+    .min(2, "Station name must be at least 2 characters")
+    .max(50, "Station name too long"),
 });
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
   const { signIn, signUp, user } = useAuth();
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [signUpData, setSignUpData] = useState({ email: '', password: '', stationName: '' });
+
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [signUpData, setSignUpData] = useState({
+    email: "",
+    password: "",
+    stationName: "",
+  });
 
   React.useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate("/");
     }
   }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    
+
     try {
       loginSchema.parse(loginData);
     } catch (err) {
@@ -50,11 +63,11 @@ const Auth: React.FC = () => {
     setIsLoading(true);
     const { error } = await signIn(loginData.email, loginData.password);
     setIsLoading(false);
-    
+
     if (error) {
       setError(error.message);
     } else {
-      navigate('/');
+      navigate("/");
     }
   };
 
@@ -72,17 +85,21 @@ const Auth: React.FC = () => {
     }
 
     setIsLoading(true);
-    const { error } = await signUp(signUpData.email, signUpData.password, signUpData.stationName);
+    const { error } = await signUp(
+      signUpData.email,
+      signUpData.password,
+      signUpData.stationName,
+    );
     setIsLoading(false);
 
     if (error) {
-      if (error.message.includes('already registered')) {
-        setError('This email is already registered. Please sign in instead.');
+      if (error.message.includes("already registered")) {
+        setError("This email is already registered. Please sign in instead.");
       } else {
         setError(error.message);
       }
     } else {
-      navigate('/');
+      navigate("/");
     }
   };
 
@@ -100,23 +117,25 @@ const Auth: React.FC = () => {
               <Radio className="h-10 w-10 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-gradient">AcciTrack</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gradient">
+            Guardian Alert
+          </CardTitle>
           <CardDescription>Emergency Response System</CardDescription>
         </CardHeader>
 
         <CardContent>
-          {error && (
-            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg flex items-center gap-2 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4 flex-shrink-0" />
-              {error}
-            </div>
-          )}
-
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="login">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Register Station</TabsTrigger>
             </TabsList>
+
+            {error && (
+              <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg flex items-center gap-2 text-sm text-destructive">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                {error}
+              </div>
+            )}
 
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
@@ -127,7 +146,9 @@ const Auth: React.FC = () => {
                     type="email"
                     placeholder="station@example.com"
                     value={loginData.email}
-                    onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                    onChange={(e) =>
+                      setLoginData({ ...loginData, email: e.target.value })
+                    }
                     required
                     className="bg-secondary/50"
                   />
@@ -139,7 +160,9 @@ const Auth: React.FC = () => {
                     type="password"
                     placeholder="••••••••"
                     value={loginData.password}
-                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                    onChange={(e) =>
+                      setLoginData({ ...loginData, password: e.target.value })
+                    }
                     required
                     className="bg-secondary/50"
                   />
@@ -151,7 +174,7 @@ const Auth: React.FC = () => {
                       Signing in...
                     </>
                   ) : (
-                    'Sign In'
+                    "Sign In"
                   )}
                 </Button>
               </form>
@@ -166,7 +189,12 @@ const Auth: React.FC = () => {
                     type="text"
                     placeholder="Fire Station #12"
                     value={signUpData.stationName}
-                    onChange={(e) => setSignUpData({ ...signUpData, stationName: e.target.value })}
+                    onChange={(e) =>
+                      setSignUpData({
+                        ...signUpData,
+                        stationName: e.target.value,
+                      })
+                    }
                     required
                     className="bg-secondary/50"
                   />
@@ -178,7 +206,9 @@ const Auth: React.FC = () => {
                     type="email"
                     placeholder="station@example.com"
                     value={signUpData.email}
-                    onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
+                    onChange={(e) =>
+                      setSignUpData({ ...signUpData, email: e.target.value })
+                    }
                     required
                     className="bg-secondary/50"
                   />
@@ -190,7 +220,9 @@ const Auth: React.FC = () => {
                     type="password"
                     placeholder="••••••••"
                     value={signUpData.password}
-                    onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}
+                    onChange={(e) =>
+                      setSignUpData({ ...signUpData, password: e.target.value })
+                    }
                     required
                     className="bg-secondary/50"
                   />
@@ -202,7 +234,7 @@ const Auth: React.FC = () => {
                       Creating station...
                     </>
                   ) : (
-                    'Register Station'
+                    "Register Station"
                   )}
                 </Button>
               </form>

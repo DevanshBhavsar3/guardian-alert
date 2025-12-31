@@ -1,7 +1,12 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Accident, AccidentSeverity, AccidentStatus, Station } from '@/types/database';
-import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Accident,
+  AccidentSeverity,
+  AccidentStatus,
+  Station,
+} from "@/types/database";
+import { useToast } from "@/hooks/use-toast";
 
 export const useAccidents = () => {
   const [accidents, setAccidents] = useState<Accident[]>([]);
@@ -10,19 +15,21 @@ export const useAccidents = () => {
 
   const fetchAccidents = async () => {
     const { data, error } = await supabase
-      .from('accidents')
-      .select(`
+      .from("accidents")
+      .select(
+        `
         *,
         station:acknowledged_by(*)
-      `)
-      .order('reported_at', { ascending: false });
+      `,
+      )
+      .order("reported_at", { ascending: false });
 
     if (error) {
-      console.error('Error fetching accidents:', error);
+      console.error("Error fetching accidents:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to fetch accidents',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to fetch accidents",
+        variant: "destructive",
       });
     } else {
       setAccidents(data as Accident[]);
@@ -32,94 +39,100 @@ export const useAccidents = () => {
 
   const acknowledgeAccident = async (accidentId: string, stationId: string) => {
     const { error } = await supabase
-      .from('accidents')
+      .from("accidents")
       .update({
-        status: 'acknowledged' as AccidentStatus,
+        status: "acknowledged" as AccidentStatus,
         acknowledged_by: stationId,
         acknowledged_at: new Date().toISOString(),
       })
-      .eq('id', accidentId)
-      .eq('status', 'pending');
+      .eq("id", accidentId)
+      .eq("status", "pending");
 
     if (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to acknowledge accident. It may have already been claimed.',
-        variant: 'destructive',
+        title: "Error",
+        description:
+          "Failed to acknowledge accident. It may have already been claimed.",
+        variant: "destructive",
       });
       return false;
     }
-    
+
     toast({
-      title: 'Success',
-      description: 'Accident acknowledged successfully',
+      title: "Success",
+      description: "Accident acknowledged successfully",
     });
     return true;
   };
 
   const resolveAccident = async (accidentId: string, stationId: string) => {
     const { error } = await supabase
-      .from('accidents')
+      .from("accidents")
       .update({
-        status: 'resolved' as AccidentStatus,
+        status: "resolved" as AccidentStatus,
         resolved_at: new Date().toISOString(),
       })
-      .eq('id', accidentId)
-      .eq('acknowledged_by', stationId);
+      .eq("id", accidentId)
+      .eq("acknowledged_by", stationId);
 
     if (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to resolve accident',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to resolve accident",
+        variant: "destructive",
       });
       return false;
     }
-    
+
     toast({
-      title: 'Success',
-      description: 'Accident resolved successfully',
+      title: "Success",
+      description: "Accident resolved successfully",
     });
     return true;
   };
 
   const simulateAccident = async () => {
-    const severities: AccidentSeverity[] = ['critical', 'high', 'medium', 'low'];
+    const severities: AccidentSeverity[] = [
+      "critical",
+      "high",
+      "medium",
+      "low",
+    ];
     const titles = [
-      'Vehicle Collision',
-      'Fire Reported',
-      'Medical Emergency',
-      'Hazardous Spill',
-      'Building Collapse',
-      'Power Line Down',
+      "Vehicle Collision",
+      "Fire Reported",
+      "Medical Emergency",
+      "Hazardous Spill",
+      "Building Collapse",
+      "Power Line Down",
     ];
     const addresses = [
-      '123 Main Street',
-      '456 Oak Avenue',
-      '789 Pine Road',
-      '321 Elm Boulevard',
-      '654 Maple Lane',
+      "123 Main Street",
+      "456 Oak Avenue",
+      "789 Pine Road",
+      "321 Elm Boulevard",
+      "654 Maple Lane",
     ];
 
-    const { error } = await supabase.from('accidents').insert({
+    const { error } = await supabase.from("accidents").insert({
       title: titles[Math.floor(Math.random() * titles.length)],
-      description: 'Simulated accident for testing purposes',
+      description: "Simulated accident for testing purposes",
       severity: severities[Math.floor(Math.random() * severities.length)],
       location_lat: 40.7128 + (Math.random() - 0.5) * 0.1,
-      location_lng: -74.0060 + (Math.random() - 0.5) * 0.1,
+      location_lng: -74.006 + (Math.random() - 0.5) * 0.1,
       location_address: addresses[Math.floor(Math.random() * addresses.length)],
     });
 
     if (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to simulate accident',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to simulate accident",
+        variant: "destructive",
       });
     } else {
       toast({
-        title: 'Alert Sent!',
-        description: 'New accident has been reported to all stations',
+        title: "Alert Sent!",
+        description: "New accident has been reported to all stations",
       });
     }
   };
@@ -128,27 +141,27 @@ export const useAccidents = () => {
     fetchAccidents();
 
     const channel = supabase
-      .channel('accidents-changes')
+      .channel("accidents-changes")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'accidents',
+          event: "*",
+          schema: "public",
+          table: "accidents",
         },
         (payload) => {
-          console.log('Realtime update:', payload);
           fetchAccidents();
-          
-          if (payload.eventType === 'INSERT') {
+
+          if (payload.eventType === "INSERT") {
             const newAccident = payload.new as Accident;
             toast({
-              title: '🚨 New Accident Alert!',
+              title: "🚨 New Accident Alert!",
               description: `${newAccident.title} - ${newAccident.severity.toUpperCase()}`,
-              variant: newAccident.severity === 'critical' ? 'destructive' : 'default',
+              variant:
+                newAccident.severity === "critical" ? "destructive" : "default",
             });
           }
-        }
+        },
       )
       .subscribe();
 
