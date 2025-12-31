@@ -108,7 +108,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_station_id: { Args: never; Returns: string }
     }
     Enums: {
       accident_severity: "critical" | "high" | "medium" | "low"
