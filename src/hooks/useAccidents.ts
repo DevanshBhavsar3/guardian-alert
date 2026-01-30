@@ -122,7 +122,7 @@ export const useAccidents = () => {
       location_lat: 40.7128 + (Math.random() - 0.5) * 0.1,
       location_lng: -74.006 + (Math.random() - 0.5) * 0.1,
       location_address: addresses[Math.floor(Math.random() * addresses.length)],
-      phoneNo: ["+916359583206", "+919924118088"],
+      phoneNo: ["+916359583206", "+919924118088", "+918200901955"],
     });
 
     if (error) {
