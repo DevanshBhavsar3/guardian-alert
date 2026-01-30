@@ -166,10 +166,6 @@ export const useAccidents = () => {
                   location: newAccident.location_address,
                 },
               );
-
-              if (res.data.success) {
-                break;
-              }
             }
 
             toast({
