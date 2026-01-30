@@ -1,5 +1,5 @@
-export type AccidentSeverity = 'critical' | 'high' | 'medium' | 'low';
-export type AccidentStatus = 'pending' | 'acknowledged' | 'resolved';
+export type AccidentSeverity = "critical" | "high" | "medium" | "low";
+export type AccidentStatus = "pending" | "acknowledged" | "resolved";
 
 export interface Station {
   id: string;
@@ -27,4 +27,5 @@ export interface Accident {
   created_at: string;
   updated_at: string;
   station?: Station;
+  phoneNo?: string;
 }

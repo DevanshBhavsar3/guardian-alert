@@ -24,6 +24,7 @@ export type Database = {
           location_address: string | null
           location_lat: number
           location_lng: number
+          phoneNo: string | null
           reported_at: string
           resolved_at: string | null
           severity: Database["public"]["Enums"]["accident_severity"]
@@ -40,6 +41,7 @@ export type Database = {
           location_address?: string | null
           location_lat: number
           location_lng: number
+          phoneNo?: string | null
           reported_at?: string
           resolved_at?: string | null
           severity?: Database["public"]["Enums"]["accident_severity"]
@@ -56,6 +58,7 @@ export type Database = {
           location_address?: string | null
           location_lat?: number
           location_lng?: number
+          phoneNo?: string | null
           reported_at?: string
           resolved_at?: string | null
           severity?: Database["public"]["Enums"]["accident_severity"]

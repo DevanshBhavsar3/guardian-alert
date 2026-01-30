@@ -7,6 +7,7 @@ import {
   Station,
 } from "@/types/database";
 import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
 
 export const useAccidents = () => {
   const [accidents, setAccidents] = useState<Accident[]>([]);
@@ -121,6 +122,7 @@ export const useAccidents = () => {
       location_lat: 40.7128 + (Math.random() - 0.5) * 0.1,
       location_lng: -74.006 + (Math.random() - 0.5) * 0.1,
       location_address: addresses[Math.floor(Math.random() * addresses.length)],
+      phoneNo: "+916359583206",
     });
 
     if (error) {
@@ -149,11 +151,21 @@ export const useAccidents = () => {
           schema: "public",
           table: "accidents",
         },
-        (payload) => {
+        async (payload) => {
           fetchAccidents();
 
           if (payload.eventType === "INSERT") {
             const newAccident = payload.new as Accident;
+
+            // call aiservice
+            await axios.post(
+              "https://guardian-alert-backend.vercel.app//call",
+              {
+                phoneNo: newAccident.phoneNo,
+                location: newAccident.location_address,
+              },
+            );
+
             toast({
               title: "🚨 New Accident Alert!",
               description: `${newAccident.title} - ${newAccident.severity.toUpperCase()}`,
