@@ -24,9 +24,6 @@ export const Header: React.FC<HeaderProps> = ({ onSimulate }) => {
                 <p className="text-xs text-muted-foreground">
                   Emergency Response System
                 </p>
-                <a href="tel:6359583206">
-                  <button>Call</button>
-                </a>
               </div>
             </div>
 
