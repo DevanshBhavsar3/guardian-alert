@@ -158,13 +158,10 @@ export const useAccidents = () => {
             const newAccident = payload.new as Accident;
 
             // call aiservice
-            await axios.post(
-              "https://guardian-alert-backend.vercel.app//call",
-              {
-                phoneNo: newAccident.phoneNo,
-                location: newAccident.location_address,
-              },
-            );
+            await axios.post("https://guardian-alert-backend.vercel.app/call", {
+              phoneNo: newAccident.phoneNo,
+              location: newAccident.location_address,
+            });
 
             toast({
               title: "🚨 New Accident Alert!",
