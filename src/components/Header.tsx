@@ -16,9 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ onSimulate }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-primary/20 rounded-lg">
-                <Radio className="h-6 w-6 text-primary" />
-              </div>
+              <img src="/logo.png" className="size-8 rounded-full" />
               <div>
                 <h1 className="text-xl font-bold text-gradient">
                   Guardian Alert
