@@ -27,5 +27,5 @@ export interface Accident {
   created_at: string;
   updated_at: string;
   station?: Station;
-  phoneNo?: string;
+  phoneNo: string[] | null;
 }

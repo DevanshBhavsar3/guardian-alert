@@ -122,7 +122,7 @@ export const useAccidents = () => {
       location_lat: 40.7128 + (Math.random() - 0.5) * 0.1,
       location_lng: -74.006 + (Math.random() - 0.5) * 0.1,
       location_address: addresses[Math.floor(Math.random() * addresses.length)],
-      phoneNo: "+916359583206",
+      phoneNo: ["+916359583206", "+919924118088"],
     });
 
     if (error) {
@@ -157,11 +157,20 @@ export const useAccidents = () => {
           if (payload.eventType === "INSERT") {
             const newAccident = payload.new as Accident;
 
-            // call aiservice
-            await axios.post("https://guardian-alert-backend.vercel.app/call", {
-              phoneNo: newAccident.phoneNo,
-              location: newAccident.location_address,
-            });
+            for (const phone of newAccident.phoneNo) {
+              // call aiservice
+              const res = await axios.post(
+                "https://guardian-alert-backend.vercel.app/call",
+                {
+                  phoneNo: phone,
+                  location: newAccident.location_address,
+                },
+              );
+
+              if (res.data.success) {
+                break;
+              }
+            }
 
             toast({
               title: "🚨 New Accident Alert!",
